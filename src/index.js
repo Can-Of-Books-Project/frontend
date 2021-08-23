@@ -8,11 +8,9 @@ ReactDOM.render(
   <Auth0Provider
     domain={process.env.REACT_APP_DOMAIN}
     clientId={process.env.REACT_APP_CLIENT_ID}
-    // domain='dev-nnqsw7ij.us.auth0.com'
-    // clientId='pahxziJBhgnfnrhOqkLvKBFA8UB0vREF'
     redirectUri={window.location.origin}
-  >
+    >
     <App />
   </Auth0Provider>,
   document.getElementById("root")
-);
+  );
