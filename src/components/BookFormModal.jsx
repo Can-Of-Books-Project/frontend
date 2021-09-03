@@ -1,21 +1,31 @@
 import React from 'react'
 import { Modal, Button, Form, Col, Row } from 'react-bootstrap';
-import { addBook, getUserBooks } from '../API/books_api'
+import { addBook, getUserBooks, updateBook } from '../API/books_api'
+
+import { useAuth0 } from '@auth0/auth0-react'
 
 export default function BookFormModal(props) {
     const [show, setShow] = React.useState(false);
     const [title, setTitle] = React.useState('')
     const [description, setDescription] = React.useState('')
-    const [status, setStatus] = React.useState('')
+    const [status, setStatus] = React.useState('LIFE-CHANGING')
     const [img, setImg] = React.useState('')
-    const { email, text } = props
+    const { type, pk } = props
+
+    const {user} = useAuth0()
+    const email = user.email
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
     const onSubmit = async (event) => {
         event.preventDefault();
+
+        type === 'Add' ? 
         await addBook(title, description, status, img, email)
+        :
+        await updateBook(title, description, status, img, pk);
+
         await getUserBooks(email).then(data => {
             props.handelNewData(data)
             handleClose()
@@ -25,7 +35,7 @@ export default function BookFormModal(props) {
     return (
         <>
             <Button variant="primary" onClick={handleShow}>
-                {text === 'Add' ? "Add" : "Update"}
+                {type === 'Add' ? "Add" : "Update"}
             </Button>
 
             <Modal
@@ -35,7 +45,7 @@ export default function BookFormModal(props) {
                 keyboard={false}
             >
                 <Modal.Header closeButton>
-                    <Modal.Title>{text === 'Add' ? "Book Details" : "Update Book's Details"}</Modal.Title>
+                    <Modal.Title>{type === 'Add' ? "Book Details" : "Update Book's Details"}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={onSubmit}>
@@ -102,7 +112,7 @@ export default function BookFormModal(props) {
                         </fieldset>
                         <Form.Group as={Row} className="mb-3">
                             <Col sm={{ span: 10, offset: 2 }}>
-                                <Button type="submit"> {text === 'Add' ? "Add" : "Update"}</Button>
+                                <Button type="submit"> {type === 'Add' ? "Add" : "Update"}</Button>
                             </Col>
                         </Form.Group>
                     </Form>

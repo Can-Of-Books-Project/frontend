@@ -3,7 +3,7 @@ import { Card, Button } from 'react-bootstrap';
 import BookFormModal from './BookFormModal';
 
 
-export default function BookCard({book, delBook}) {
+export default function BookCard({book, delBook, handelNewData}) {
     
 
 
@@ -20,7 +20,9 @@ export default function BookCard({book, delBook}) {
           </Card.Text>
           {/* <Button variant="primary">Update</Button>{" "} */}
           <Button onClick={() => delBook(book._id)} variant="danger">Delete</Button>
-          <BookFormModal />
+
+          {/* Update button */}
+          <BookFormModal pk={book._id}  type="update" handelNewData={handelNewData}/>
         </Card.Body>
       </Card>
     )

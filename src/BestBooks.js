@@ -17,14 +17,41 @@ class MyFavoriteBooks extends React.Component {
     super(props);
     this.state = {
       books: [],
-      email: ""
+      email: "",
+      status: "",
+      showStatus: false
     }
+  }
+
+  showStatusActive() {
+    let style, content
+    switch (this.state.status) {
+      case 'delete':
+        style = "alert alert-danger";
+        content = "Deleted";
+        break;
+
+      case 'Add':
+        style = "alert alert-success";
+        content = "Added";
+        break;
+
+      case 'Update':
+        style = "alert alert-success";
+        content = "Update";
+        break;
+
+      default:
+
+    }
+
+    return <div className={style} role="alert"> Book was {content} successfully </div>
   }
 
   componentDidMount() {
     const accountEnfo = this.props.auth0.user;
     const { name, email } = accountEnfo
-    CreateUser(name, email).then((info) => {
+    CreateUser(name, email).then(() => {
       getUserBooks(email).then(data => {
         this.setState({ books: data, email: email })
       })
@@ -32,46 +59,60 @@ class MyFavoriteBooks extends React.Component {
   }
 
   handelNewData = books => {
-    console.log(books)
     this.setState({ books: books })
-    this.setState({refresh: null})
+    this.setState({ showStatus: true, status: "Add" })
 
+    setTimeout(() => {
+      this.setState({ showStatus: false, status: "" })
+    }, 3000);
+    // this.setState({refresh: null})
   }
 
-  delBook = id => {
-    deleteBook(id)
-    getUserBooks(this.state.email).then(data => {
-      this.setState({ books: data })
-      this.setState({refresh: null})
-    })
+  delBook = pk => {
+    let conf = window.confirm("Are you sure");
+    if (conf) {
+      deleteBook(pk)
+      getUserBooks(this.state.email).then(data => {
+        this.setState({ books: data })
+        this.setState({ showStatus: true, status: "delete" })
+
+        setTimeout(() => {
+          this.setState({ showStatus: false, status: "" })
+        }, 3000);
+        // this.setState({refresh: null})
+      })
+
+
+    } else {
+      return
+    }
   }
 
   render() {
     return (
       <Jumbotron>
+
         <h1>My Favorite Books</h1>
         <p>
           This is a collection of my favorite books
         </p>
-
-        <div class="alert alert-danger" role="alert">
-          Book was Deleted successfully
-        </div>
-
-        <div class="alert alert-success" role="alert">
-          new Book was Added successfully
-        </div>
+        {/* add button */}
+        <BookFormModal type="Add" email={this.state.email} handelNewData={this.handelNewData} />
+        <br />
+        {this.state.showStatus &&
+          this.showStatusActive()
+        }
+        <br />
 
         <div className='d-flex flex-row'>
           {this.state.books &&
 
             this.state.books.map((book, id) =>
               <div className='p-4' key={id}>
-                <BookCard book={book} delBook={this.delBook} />
+                <BookCard book={book} delBook={this.delBook} handelNewData={this.handelNewData} />
               </div>
             )}
         </div>
-        <BookFormModal text="Add" email={this.state.email} handelNewData={this.handelNewData} />
 
       </Jumbotron>
     )
