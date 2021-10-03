@@ -7,7 +7,7 @@ import './Footer.css';
 class Footer extends React.Component {
   render() {
     return (
-      <div className="footer-layout">
+      <div className="footer fixed-bottom">
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
           <Navbar.Brand>&copy; Best Books</Navbar.Brand>
         </Navbar>
