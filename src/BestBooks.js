@@ -2,6 +2,8 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import './BestBooks.css';
+import { Card, Button,Row } from 'react-bootstrap';
+
 
 import { withAuth0 } from '@auth0/auth0-react'
 import { CreateUser, getUserBooks } from './API/books_api'
@@ -104,16 +106,18 @@ class MyFavoriteBooks extends React.Component {
         }
         <br />
 
-        <div className='d-flex flex-row'>
-          {this.state.books &&
+        {this.state.books &&
 
-            this.state.books.map((book, id) =>
-              <div className='p-4' key={id}>
+          <Row xs={1} md={3} className="g-4">
+            {this.state.books.map((book, idx) => (
+              <div className='p-4' key={idx}>
                 <BookCard book={book} delBook={this.delBook} handelNewData={this.handelNewData} />
               </div>
-            )}
-        </div>
+            ))
+            }
 
+          </Row>
+        }
       </Jumbotron>
     )
   }
